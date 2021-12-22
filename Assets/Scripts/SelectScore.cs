@@ -15,6 +15,5 @@ public class SelectScore : MonoBehaviour, IPointerClickHandler
 
         Text scoreText = go.transform.parent.Find("ScoreText").GetComponent<Text>();
         scoreText.color = Color.black;
-        // Debug.Log("Clicked: " + eventData.pointerCurrentRaycast.gameObject.name);
     }
 }
