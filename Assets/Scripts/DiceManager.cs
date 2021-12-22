@@ -6,17 +6,17 @@ using System.Linq;
 
 public class DiceManager : MonoBehaviour
 {
-    public GameObject[] dices;
+    public static DiceScript[] dices;
     public UnityEvent onRollingFinish;
 
     // Start is called before the first frame update
     void Awake()
     {
-        dices = GameObject.FindGameObjectsWithTag("Dice");
+        dices = transform.GetComponentsInChildren<DiceScript>();
         int diceIndex = 0;
         foreach (var dice in dices)
         {
-            dice.GetComponent<DiceScript>().diceIndex = diceIndex;
+            dice.diceIndex = diceIndex;
             diceIndex += 1;
         }
     }
@@ -31,7 +31,7 @@ public class DiceManager : MonoBehaviour
     {
         foreach (var dice in dices)
         {
-            dice.GetComponent<DiceScript>().Wait();
+            dice.Wait();
         }
     }
 
@@ -40,16 +40,40 @@ public class DiceManager : MonoBehaviour
     {
         foreach (var dice in dices)
         {
-            dice.GetComponent<DiceScript>().Roll();
+            if (dice.diceInfo.keeping == false)
+            {
+                dice.Roll();
+            }
         }
     }
     
 
     public void OnRollingFinish()
     {
-        foreach (var dice in dices)
+        var sortedList = DiceScript.diceInfoList.OrderBy(x => x.diceNumber).ToList();
+
+        int i = 0;
+        foreach (DiceInfo sortedDiceInfo in sortedList)
         {
-            dice.GetComponent<DiceScript>().OnRollingFinish();
+            DiceInfo diceInfo = DiceScript.diceInfoList.Where(x => x.diceIndex == sortedDiceInfo.diceIndex).First();
+            diceInfo.sortedIndex = i;
+            i += 1;
+        }
+
+        // keeping이 false인 것들에 대해서만 loop through
+        var sortedUnkeptList = sortedList.Where(x => x.keeping == false).ToList();
+        StartCoroutine(DiceRollFinish(sortedUnkeptList));
+
+
+    }
+
+    IEnumerator DiceRollFinish(List<DiceInfo> sortedUnkeptList)
+    {
+        foreach (DiceInfo diceInfo in sortedUnkeptList)
+        {
+            int i = diceInfo.diceIndex;
+            dices[i].OnRollingFinish();
+            yield return new WaitForSecondsRealtime(0.05f);
         }
     }
 }

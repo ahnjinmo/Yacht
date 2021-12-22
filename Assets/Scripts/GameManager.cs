@@ -25,6 +25,10 @@ public class GameManager : MonoBehaviour
     public UnityEvent onRollingStart;
     public UnityEvent onRollingFinish;
 
+    private float posX = 1.4f;
+    private float posY = 7.0f;
+
+
     void Awake()
     {
         if (instance == null)
@@ -39,11 +43,11 @@ public class GameManager : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
-        posArray[0] = new Vector3(-2.8f, 6f, 0f);
-        posArray[1] = new Vector3(-1.4f, 6f, 0f);
-        posArray[2] = new Vector3(0f, 6f, 0f);
-        posArray[3] = new Vector3(1.4f, 6f, 0f);
-        posArray[4] = new Vector3(2.8f, 6f, 0f);
+        posArray[0] = new Vector3(-2 * posX, posY, 0f);
+        posArray[1] = new Vector3(-posX, posY, 0f);
+        posArray[2] = new Vector3(0f, posY, 0f);
+        posArray[3] = new Vector3(posX, posY, 0f);
+        posArray[4] = new Vector3(2 * posX, posY, 0f);
 
         rotArray[0] = Quaternion.Euler(90f, 0f, 0f);
         rotArray[1] = Quaternion.Euler(0f, 0f, 0f);
@@ -63,19 +67,31 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.waiting || currentGameState == GameState.sorting))
+        if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.waiting || currentGameState == GameState.selecting))
         {
+            IntializeDice();
             SetGameState(GameState.rolling);
             onRollingStart.Invoke();
-            DiceScript.diceNumberArray = new int[]{ 0, 0, 0, 0, 0 };
         }
 
-        if (currentGameState == GameState.rolling && !DiceScript.diceNumberArray.Contains(0))
+        bool rollingFinished = !DiceScript.diceInfoList.Any(x => x.diceNumber == 0);
+
+        if (currentGameState == GameState.rolling && rollingFinished)
         {
-            SetGameState(GameState.sorting);
+            SetGameState(GameState.selecting);
             onRollingFinish.Invoke();
         }
+    }
 
+    private void IntializeDice()
+    {
+        foreach (DiceInfo diceInfo in DiceScript.diceInfoList)
+        {
+            if (diceInfo.keeping == false)
+            {
+                diceInfo.diceNumber = 0;
+            }
+        }
     }
 
 
