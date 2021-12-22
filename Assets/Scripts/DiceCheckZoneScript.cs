@@ -24,26 +24,26 @@ public class DiceCheckZoneScript : MonoBehaviour
                 switch (col.gameObject.name)
                 {
                     case "Side1":
-                        diceScript.diceNumber = 6;
+                        diceScript.diceInfo.diceNumber = 6;
                         break;
                     case "Side2":
-                        diceScript.diceNumber = 5;
+                        diceScript.diceInfo.diceNumber = 5;
                         break;
                     case "Side3":
-                        diceScript.diceNumber = 4;
+                        diceScript.diceInfo.diceNumber = 4;
                         break;
                     case "Side4":
-                        diceScript.diceNumber = 3;
+                        diceScript.diceInfo.diceNumber = 3;
                         break;
                     case "Side5":
-                        diceScript.diceNumber = 2;
+                        diceScript.diceInfo.diceNumber = 2;
                         break;
                     case "Side6":
-                        diceScript.diceNumber = 1;
+                        diceScript.diceInfo.diceNumber = 1;
                         break;
                 }
 
-                diceScript.currentDiceState = DiceState.stopped;
+                diceScript.diceInfo.rolling = false;
                 diceScript.rb.isKinematic = true;
             }
         }
