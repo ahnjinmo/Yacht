@@ -63,6 +63,7 @@ public class DiceScript : MonoBehaviour
                 if (diceInfo.keeping != true)
                 {
                     PickedSlotController.instance.PutIntoEmptySlot(diceIndex);
+                    Debug.Log("putting");
                 }
                 else
                 {
@@ -117,6 +118,7 @@ public class DiceScript : MonoBehaviour
 
     public void Wait()
     {
+        rb.isKinematic = false;
         transform.position = CupManager.instance.inCupSpawnTransforms[diceIndex].position;
         transform.rotation = Random.rotation;
     }

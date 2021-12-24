@@ -19,12 +19,17 @@ public class DiceNumberTextScript : MonoBehaviour
     {
     }
 
-    public void ResetResult()
+    public void OnWaiting()
+    {
+        text.text = "roll the dices";
+    }
+
+    public void OnRolling()
     {
         text.text = "rolling dice...";
     }
 
-    public void FetchResult()
+    public void OnSelecting()
     {
         var a = DiceScript.diceInfoList.OrderBy(x => x.diceNumber).Select(x => x.diceNumber).ToArray();
         string result = "[" + string.Join(",", a) + "]";

@@ -24,6 +24,7 @@ public class PickedSlot : MonoBehaviour
 
     public void PutDiceInSlot(int diceIndex)
     {
+        Debug.Log("put dice in slot");
         occupied = true;
         dice = DiceManager.dices[diceIndex];
         dice.OnPicked(transform);

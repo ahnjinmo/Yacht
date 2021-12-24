@@ -11,10 +11,14 @@ public class SelectScore : MonoBehaviour, IPointerClickHandler
     {
         GameObject go = eventData.pointerCurrentRaycast.gameObject;
         Text categoryText = go.transform.Find("CategoryText").GetComponent<Text>();
-        StrategyScript.strategies[categoryText.text]["done"] = 1;
 
-        Text scoreText = go.transform.parent.Find("ScoreText").GetComponent<Text>();
-        scoreText.color = Color.black;
+        int done = StrategyScript.strategies[categoryText.text]["done"];
+
+        if (done != 1)
+        {
+            StrategyScript.strategies[categoryText.text]["done"] = 1;
+            GameManager.instance.Wait();
+        }
         // Debug.Log("Clicked: " + eventData.pointerCurrentRaycast.gameObject.name);
     }
 }
