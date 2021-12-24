@@ -12,6 +12,7 @@ public class SelectScore : MonoBehaviour, IPointerClickHandler
         GameObject go = eventData.pointerCurrentRaycast.gameObject;
         Text categoryText = go.transform.Find("CategoryText").GetComponent<Text>();
 
+
         int done = StrategyScript.strategies[categoryText.text]["done"];
 
         if (done != 1)
@@ -20,5 +21,6 @@ public class SelectScore : MonoBehaviour, IPointerClickHandler
             GameManager.instance.Wait();
         }
         // Debug.Log("Clicked: " + eventData.pointerCurrentRaycast.gameObject.name);
+
     }
 }
