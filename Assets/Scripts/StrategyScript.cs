@@ -35,6 +35,7 @@ public class StrategyScript : MonoBehaviour
             strategies.Add(strategyName, strategy_info);
         }
         strategies["Bonus"]["done"] = 1;
+        strategies["Total"]["done"] = 1;
     }
     public void Calculate()
     {
@@ -46,6 +47,7 @@ public class StrategyScript : MonoBehaviour
         {
             if (strategies[string.Format("{0}s", i)]["done"] == 1)
             {
+                upperScore += strategies[string.Format("{0}s", i)]["score"];
                 continue;
             }
 

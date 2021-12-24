@@ -10,7 +10,6 @@ public enum GameState
 {
     waiting,
     rolling,
-    sorting,
     selecting
 }
 
@@ -19,6 +18,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public static Vector3[] posArray = new Vector3[5];
     public static Quaternion[] rotArray = new Quaternion[6];
+    public static int turnCount = 1;
 
     public GameState currentGameState = GameState.waiting;
     public UnityEvent onRollingWait;
@@ -60,14 +60,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetGameState(GameState.waiting);
-        onRollingWait.Invoke();
+        Wait();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.waiting || currentGameState == GameState.selecting))
+        if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.waiting || currentGameState == GameState.selecting) && turnCount <= 3)
         {
             IntializeDice();
             SetGameState(GameState.rolling);
@@ -80,6 +79,7 @@ public class GameManager : MonoBehaviour
         {
             SetGameState(GameState.selecting);
             onRollingFinish.Invoke();
+            turnCount += 1;
         }
     }
 
@@ -87,6 +87,11 @@ public class GameManager : MonoBehaviour
     {
         foreach (DiceInfo diceInfo in DiceScript.diceInfoList)
         {
+            if (turnCount == 1)
+            {
+                diceInfo.keeping = false;
+            }
+
             if (diceInfo.keeping == false)
             {
                 diceInfo.diceNumber = 0;
@@ -103,8 +108,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
+    public void Wait()
     {
-
+        SetGameState(GameState.waiting);
+        turnCount = 1;
+        onRollingWait.Invoke();
     }
 }

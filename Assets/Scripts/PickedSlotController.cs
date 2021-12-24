@@ -42,7 +42,16 @@ public class PickedSlotController : MonoBehaviour
         
     }
 
-    public void PutIntoEmptySlot(int diceIndex)
+    public void OnRollingWait()
+    {
+        foreach (PickedSlot pickedSlot in pickedSlots)
+        {
+            pickedSlot.occupied = false;
+        }
+    }
+
+
+public void PutIntoEmptySlot(int diceIndex)
     {
         // find empty pickedslots
         int i = FindEmptySlot();
