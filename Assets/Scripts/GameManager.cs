@@ -9,6 +9,7 @@ using UnityEngine.Events;
 public enum GameState
 {
     waiting,
+    ready,
     shaking,
     pouring,
     rolling,
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
     public static bool rollTrigger = false;
 
     public GameState currentGameState = GameState.waiting;
+    public UnityEvent onWaitStart;
     public UnityEvent onReadyStart;
     public UnityEvent onRollingWait;
     public UnityEvent onShakingStart;
@@ -72,13 +74,19 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.X) && currentGameState == GameState.waiting)
+        if (Input.GetKey(KeyCode.X) && currentGameState == GameState.waiting && CupManager.playingAnim == false)
         {
-            Debug.Log("afe");
             onReadyStart.Invoke();
+            SetGameState(GameState.ready);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.waiting || currentGameState == GameState.selecting) && turnCount <= 3)
+        if (Input.GetKey(KeyCode.X) && currentGameState == GameState.waiting && CupManager.playingAnim == false)
+        {
+            onWaitStart.Invoke();
+            SetGameState(GameState.ready);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.ready || currentGameState == GameState.selecting) && turnCount <= 3)
         {
             IntializeDice();
             SetGameState(GameState.shaking);

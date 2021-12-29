@@ -5,6 +5,7 @@ using UnityEngine;
 public class CupManager : MonoBehaviour
 {
     public static CupManager instance;
+    public static bool playingAnim = false;
 
     public Transform[] inCupSpawnTransforms = new Transform[5];
 
@@ -50,6 +51,7 @@ public class CupManager : MonoBehaviour
 
     public void OnReadyStart()
     {
+        playingAnim = true;
         anim.SetTrigger("Ready");
     }
 
@@ -73,5 +75,10 @@ public class CupManager : MonoBehaviour
     public void OnRollingFinish()
     {
         ceiling.enabled = true;
+    }
+
+    public void OnAnimationFinish()
+    {
+        playingAnim = false;
     }
 }
