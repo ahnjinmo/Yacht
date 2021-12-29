@@ -13,6 +13,7 @@ public class DiceInfo
 
 public class DiceScript : MonoBehaviour
 {
+    
     public bool showTrigger = false;
     public bool pickTrigger = false;
     public bool takeOutTrigger = false;
@@ -30,7 +31,6 @@ public class DiceScript : MonoBehaviour
     public DiceInfo diceInfo;
 
     public static List<DiceInfo> diceInfoList = new List<DiceInfo>();
-
 
 
     // Start is called before the first frame update
@@ -129,13 +129,15 @@ public class DiceScript : MonoBehaviour
         {
             rb.isKinematic = false;
             diceInfo.rolling = true;
-            float dirX = Random.Range(0, 500);
-            float dirY = Random.Range(0, 500);
-            float dirZ = Random.Range(0, 500);
-            transform.position = GenerateRandomPos();
-            transform.rotation = Random.rotation;
-            rb.AddForce(transform.up * 200);
-            rb.AddTorque(dirX, dirY, dirZ);
+            Vector3 dir = new Vector3(-1.732f, -1f, 0).normalized;
+            //float dirX = Random.Range(0, 500);
+            //float dirY = Random.Range(0, 500);
+            //float dirZ = Random.Range(0, 500);
+            //transform.position = GenerateRandomPos();
+            //transform.rotation = Random.rotation;
+            
+            rb.AddForce(dir * 700);
+            //rb.AddTorque(dirX, dirY, dirZ);
         }
     }
 
