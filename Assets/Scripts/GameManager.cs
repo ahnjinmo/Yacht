@@ -21,7 +21,6 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public static Vector3[] posArray = new Vector3[5];
     public static Quaternion[] rotArray = new Quaternion[6];
     public static int turnCount = 1;
     public static bool rollTrigger = false;
@@ -56,11 +55,6 @@ public class GameManager : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
-        posArray[0] = new Vector3(-2 * posX, posY, 0f);
-        posArray[1] = new Vector3(-posX, posY, 0f);
-        posArray[2] = new Vector3(0f, posY, 0f);
-        posArray[3] = new Vector3(posX, posY, 0f);
-        posArray[4] = new Vector3(2 * posX, posY, 0f);
 
         rotArray[0] = Quaternion.Euler(90f, 0f, 0f);
         rotArray[1] = Quaternion.Euler(0f, 0f, 0f);
@@ -108,7 +102,7 @@ public class GameManager : MonoBehaviour
         }
 
         // ready에서 스페이스바 누르면 shaking으로 전환.
-        if (Input.GetKeyDown(KeyCode.Space) && currentGameState == GameState.ready)
+        if (Input.GetKeyDown(KeyCode.Space) && currentGameState == GameState.ready && CupManager.playingAnim == false)
         {
             bool moreThanOne = DiceScript.diceInfoList.Any(x => x.keeping == false);
             

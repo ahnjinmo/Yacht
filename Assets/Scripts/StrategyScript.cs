@@ -8,6 +8,7 @@ public class StrategyScript : MonoBehaviour
     public static StrategyScript instance;
     public static Dictionary<string, Dictionary<string, int>> strategies = new Dictionary<string, Dictionary<string, int>>();
     public static string[] strategiesOrder = { "1s", "2s", "3s", "4s", "5s", "6s", "Bonus", "Choice", "4-of-a-kind", "Full House", "S. Straight", "L. Straight", "Yacht", "Total" };
+    public static string bestRank;
 
     private int[] diceNumberArray = new int[5];
     private int[] uniqueNumberArray;
@@ -93,6 +94,25 @@ public class StrategyScript : MonoBehaviour
                 strategies["Total"]["score"] += strategies[strategiesOrder[i]]["score"];
             }
         }
+
+        bestRank = FindBestRank();
+    }
+
+    private string FindBestRank()
+    {
+        string bestRank = "";
+        for (int i = 8; i < 13; i++)
+        {
+            if (strategies[strategiesOrder[i]]["done"] == 0)
+            {
+                if (strategies[strategiesOrder[i]]["score"] > 0)
+                {
+                    bestRank = strategiesOrder[i];
+                }
+            }
+        }
+
+        return bestRank;
     }
 
     public int HighestRepeated(int minRepeats)

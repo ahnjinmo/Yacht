@@ -129,7 +129,7 @@ public class DiceScript : MonoBehaviour
             rb.isKinematic = false;
             diceInfo.rolling = true;
             Vector3 dir = new Vector3(-1.732f, -1f, 0).normalized;  
-            rb.AddForce(dir * 700);
+            rb.AddForce(dir * 900);
         }
     }
 
@@ -138,7 +138,7 @@ public class DiceScript : MonoBehaviour
         rb.isKinematic = true;
         prevPosition = transform.position;
         prevRotation = transform.rotation;
-        targetPosition = GameManager.posArray[diceInfo.sortedIndex];
+        targetPosition = ShownSlotController.shownSlots[diceInfo.sortedIndex].transform.position;
         targetRotation = GameManager.rotArray[diceInfo.diceNumber - 1];
         showTrigger = true;
         timeStartedLerping = Time.time;
@@ -157,7 +157,7 @@ public class DiceScript : MonoBehaviour
     {
         diceInfo.keeping = false;
         prevPosition = transform.position;
-        targetPosition = new Vector3(0, 4f, 0);
+        targetPosition = ShownSlotController.shownSlots[diceInfo.sortedIndex].transform.position;
         takeOutTrigger = true;
         timeStartedLerping = Time.time;
     }

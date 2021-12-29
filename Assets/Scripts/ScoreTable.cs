@@ -56,6 +56,5 @@ public class ScoreTable : MonoBehaviour
                 scoreTexts[i].text = _strategy["score"].ToString();
             }
         }
-
     }
 }
