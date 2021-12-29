@@ -9,6 +9,8 @@ using UnityEngine.Events;
 public enum GameState
 {
     waiting,
+    shaking,
+    pouring,
     rolling,
     selecting
 }
@@ -19,9 +21,13 @@ public class GameManager : MonoBehaviour
     public static Vector3[] posArray = new Vector3[5];
     public static Quaternion[] rotArray = new Quaternion[6];
     public static int turnCount = 1;
+    public static bool rollTrigger = false;
 
     public GameState currentGameState = GameState.waiting;
+    public UnityEvent onReadyStart;
     public UnityEvent onRollingWait;
+    public UnityEvent onShakingStart;
+    public UnityEvent onPouringStart;
     public UnityEvent onRollingStart;
     public UnityEvent onRollingFinish;
 
@@ -66,12 +72,38 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.X) && currentGameState == GameState.waiting)
+        {
+            Debug.Log("afe");
+            onReadyStart.Invoke();
+        }
+
         if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.waiting || currentGameState == GameState.selecting) && turnCount <= 3)
         {
             IntializeDice();
-            SetGameState(GameState.rolling);
+            SetGameState(GameState.shaking);
+            onShakingStart.Invoke();
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space) && currentGameState == GameState.shaking)
+        {
+            SetGameState(GameState.pouring);
+            onPouringStart.Invoke();
+        }
+
+        if (currentGameState == GameState.rolling && rollTrigger == true)
+        {
+            rollTrigger = false;
             onRollingStart.Invoke();
         }
+
+
+        //if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.waiting || currentGameState == GameState.selecting) && turnCount <= 3)
+        //{
+        //    IntializeDice();
+        //    SetGameState(GameState.rolling);
+        //    onRollingStart.Invoke();
+        //}
 
         bool rollingFinished = !DiceScript.diceInfoList.Any(x => x.diceNumber == 0);
 
