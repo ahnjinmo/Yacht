@@ -8,12 +8,14 @@ using UnityEngine.Events;
 
 public enum GameState
 {
-    waiting,
+    initializing,
     ready,
     shaking,
     pouring,
     rolling,
-    selecting
+    selecting,
+    waiting,
+    finish
 }
 
 public class GameManager : MonoBehaviour
@@ -23,16 +25,19 @@ public class GameManager : MonoBehaviour
     public static Quaternion[] rotArray = new Quaternion[6];
     public static int turnCount = 1;
     public static bool rollTrigger = false;
+    public static GameState currentGameState = GameState.initializing;
 
-    public GameState currentGameState = GameState.waiting;
-    public UnityEvent onWaitStart;
+    public UnityEvent onInitialize;
     public UnityEvent onReadyStart;
-    public UnityEvent onRollingWait;
+    public UnityEvent onReadyToSelect;
     public UnityEvent onShakingStart;
     public UnityEvent onPouringStart;
     public UnityEvent onRollingStart;
     public UnityEvent onRollingFinish;
+    public UnityEvent onFinish;
 
+    private bool initializeTrigger = false;
+    private bool readyTrigger = false;
     private float posX = 1.4f;
     private float posY = 7.0f;
 
@@ -68,90 +73,104 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Wait();
+        initializeTrigger = true;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.X) && currentGameState == GameState.waiting && CupManager.playingAnim == false)
+        // 주사위 및 기타 변수 초기화 후 ready로 이동
+        if (currentGameState == GameState.initializing)
+        {
+            SetGameState(GameState.ready);
+            turnCount = 1;
+            onInitialize.Invoke();
+            initializeTrigger = false;
+            readyTrigger = true;
+            // ShownSlot 초기화도 onInitialize 이벤트에 추가해야 함
+        }
+
+        // ready
+        if (currentGameState == GameState.ready && readyTrigger)
         {
             onReadyStart.Invoke();
-            SetGameState(GameState.ready);
+            readyTrigger = false;
         }
 
-        if (Input.GetKey(KeyCode.X) && currentGameState == GameState.waiting && CupManager.playingAnim == false)
+        // ready에서 X 누르면 selecting으로 전환. 이건 첫 번째 주사위 굴릴 때는 불가능
+        if (Input.GetKey(KeyCode.X) && currentGameState == GameState.ready && turnCount > 1 && CupManager.playingAnim == false)
         {
-            onWaitStart.Invoke();
-            SetGameState(GameState.ready);
+            CupManager.playingAnim = true;
+            SetGameState(GameState.selecting);
+            onReadyToSelect.Invoke();
+            Debug.Log("ready to selecting");
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.ready || currentGameState == GameState.selecting) && turnCount <= 3)
+        // ready에서 스페이스바 누르면 shaking으로 전환.
+        if (Input.GetKeyDown(KeyCode.Space) && currentGameState == GameState.ready)
         {
-            IntializeDice();
-            SetGameState(GameState.shaking);
-            onShakingStart.Invoke();
+            bool moreThanOne = DiceScript.diceInfoList.Any(x => x.keeping == false);
+            
+            if (moreThanOne)
+            {
+                SetGameState(GameState.shaking);
+                onShakingStart.Invoke();
+            }
+
         }
 
+        // shaking에서 스페이스바 떼면 pouring으로 전환.
         if (Input.GetKeyUp(KeyCode.Space) && currentGameState == GameState.shaking)
         {
             SetGameState(GameState.pouring);
             onPouringStart.Invoke();
         }
 
+        // rolling으로 바뀌면 실행
         if (currentGameState == GameState.rolling && rollTrigger == true)
         {
             rollTrigger = false;
             onRollingStart.Invoke();
         }
 
-
-        //if (Input.GetKeyDown(KeyCode.Space) && (currentGameState == GameState.waiting || currentGameState == GameState.selecting) && turnCount <= 3)
-        //{
-        //    IntializeDice();
-        //    SetGameState(GameState.rolling);
-        //    onRollingStart.Invoke();
-        //}
-
+        
         bool rollingFinished = !DiceScript.diceInfoList.Any(x => x.diceNumber == 0);
 
+        // 모든 주사위가 rolling이 끝나면 selecting으로 전환
         if (currentGameState == GameState.rolling && rollingFinished)
         {
             SetGameState(GameState.selecting);
             onRollingFinish.Invoke();
             turnCount += 1;
         }
-    }
 
-    private void IntializeDice()
-    {
-        foreach (DiceInfo diceInfo in DiceScript.diceInfoList)
+        // 3번 다 던지고 난 후에는 selecting에서 finish로 전환
+        if (currentGameState == GameState.selecting && turnCount > 3)
         {
-            if (turnCount == 1)
-            {
-                diceInfo.keeping = false;
-            }
+            SetGameState(GameState.finish);
+            onFinish.Invoke();
+        }
 
-            if (diceInfo.keeping == false)
+        // selecting 단계에서 X 누르면 ready 단계로 전환. 이건 주사위 세 번 다 굴리면 불가능
+        if (Input.GetKey(KeyCode.X) && currentGameState == GameState.selecting && turnCount <= 3 && CupManager.playingAnim == false)
+        {
+            bool moreThanOne = DiceScript.diceInfoList.Any(x => x.keeping == false);
+
+            if (moreThanOne)
             {
-                diceInfo.diceNumber = 0;
+                SetGameState(GameState.ready);
+                readyTrigger = true;
             }
         }
     }
 
 
-    public void SetGameState(GameState newGameState)
+    public static void SetGameState(GameState newGameState)
     {
         if (Enum.IsDefined(typeof(GameState), newGameState))
         {
             currentGameState = newGameState;
         }
-    }
-
-    public void Wait()
-    {
-        SetGameState(GameState.waiting);
-        turnCount = 1;
-        onRollingWait.Invoke();
     }
 }

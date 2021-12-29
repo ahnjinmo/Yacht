@@ -18,7 +18,7 @@ public class SelectScore : MonoBehaviour, IPointerClickHandler
         if (done != 1)
         {
             StrategyScript.strategies[categoryText.text]["done"] = 1;
-            GameManager.instance.Wait();
+            GameManager.SetGameState(GameState.initializing);
         }
         // Debug.Log("Clicked: " + eventData.pointerCurrentRaycast.gameObject.name);
 

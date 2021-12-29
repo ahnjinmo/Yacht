@@ -53,7 +53,6 @@ public class StrategyScript : MonoBehaviour
 
             int score = SumOfSingle(i);
             strategies[string.Format("{0}s", i)]["score"] = score;
-            upperScore += score;
         }
 
         if (upperScore >= 63)
@@ -86,6 +85,14 @@ public class StrategyScript : MonoBehaviour
             strategies["Yacht"]["score"] = OfAKind(5);
         }
 
+        strategies["Total"]["score"] = 0;
+        for (int i = 0; i<13; i++)
+        {
+            if (strategies[strategiesOrder[i]]["done"] == 1)
+            {
+                strategies["Total"]["score"] += strategies[strategiesOrder[i]]["score"];
+            }
+        }
     }
 
     public int HighestRepeated(int minRepeats)

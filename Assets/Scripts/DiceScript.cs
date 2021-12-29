@@ -54,7 +54,7 @@ public class DiceScript : MonoBehaviour
     {
         diceVelocity = rb.velocity;
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && GameManager.turnCount <= 3)
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -63,7 +63,6 @@ public class DiceScript : MonoBehaviour
                 if (diceInfo.keeping != true)
                 {
                     PickedSlotController.instance.PutIntoEmptySlot(diceIndex);
-                    Debug.Log("putting");
                 }
                 else
                 {
@@ -116,7 +115,7 @@ public class DiceScript : MonoBehaviour
         }
     }
 
-    public void Wait()
+    public void Ready()
     {
         rb.isKinematic = false;
         transform.position = CupManager.instance.inCupSpawnTransforms[diceIndex].position;
@@ -129,20 +128,14 @@ public class DiceScript : MonoBehaviour
         {
             rb.isKinematic = false;
             diceInfo.rolling = true;
-            Vector3 dir = new Vector3(-1.732f, -1f, 0).normalized;
-            //float dirX = Random.Range(0, 500);
-            //float dirY = Random.Range(0, 500);
-            //float dirZ = Random.Range(0, 500);
-            //transform.position = GenerateRandomPos();
-            //transform.rotation = Random.rotation;
-            
+            Vector3 dir = new Vector3(-1.732f, -1f, 0).normalized;  
             rb.AddForce(dir * 700);
-            //rb.AddTorque(dirX, dirY, dirZ);
         }
     }
 
     public void OnRollingFinish()
     {
+        rb.isKinematic = true;
         prevPosition = transform.position;
         prevRotation = transform.rotation;
         targetPosition = GameManager.posArray[diceInfo.sortedIndex];

@@ -42,7 +42,7 @@ public class PickedSlotController : MonoBehaviour
         
     }
 
-    public void OnRollingWait()
+    public void OnInitialize()
     {
         foreach (PickedSlot pickedSlot in pickedSlots)
         {
@@ -51,7 +51,7 @@ public class PickedSlotController : MonoBehaviour
     }
 
 
-public void PutIntoEmptySlot(int diceIndex)
+    public void PutIntoEmptySlot(int diceIndex)
     {
         // find empty pickedslots
         int i = FindEmptySlot();

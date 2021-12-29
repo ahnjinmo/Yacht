@@ -34,14 +34,14 @@ public class ScoreTable : MonoBehaviour
     
     public void UpdateScoreTable()
     {
-        GameState _gameState = GameManager.instance.currentGameState;
+        GameState _gameState = GameManager.currentGameState;
         Dictionary<string, int> _strategy = null;
 
         for (int i = 0; i < 14; i++)
         {
             _strategy = strategies[StrategyScript.strategiesOrder[i]];
 
-            if ((_gameState == GameState.waiting || _gameState == GameState.rolling) && _strategy["done"] == 0)
+            if ((_gameState != GameState.selecting) && _strategy["done"] == 0)
             {
                 scoreTexts[i].text = "";
             }
@@ -53,6 +53,7 @@ public class ScoreTable : MonoBehaviour
             if (_strategy["done"] == 1)
             {
                 scoreTexts[i].color = Color.black;
+                scoreTexts[i].text = _strategy["score"].ToString();
             }
         }
 

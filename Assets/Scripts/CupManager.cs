@@ -36,6 +36,8 @@ public class CupManager : MonoBehaviour
             i += 1;
         }
     }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,16 +45,16 @@ public class CupManager : MonoBehaviour
         ceiling = transform.Find("Ceiling").GetComponent<BoxCollider>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void OnReadyStart()
     {
         playingAnim = true;
         anim.SetTrigger("Ready");
+    }
+
+    public void OnReadyToSelect()
+    {
+        anim.SetTrigger("Rest");
     }
 
     public void OnShakingStart()
@@ -67,7 +69,7 @@ public class CupManager : MonoBehaviour
 
     public void OnRollingStart()
     {
-        GameManager.instance.SetGameState(GameState.rolling);
+        GameManager.SetGameState(GameState.rolling);
         GameManager.rollTrigger = true;
         ceiling.enabled = false;
     }
@@ -75,6 +77,11 @@ public class CupManager : MonoBehaviour
     public void OnRollingFinish()
     {
         ceiling.enabled = true;
+    }
+
+    public void OnAnimationStart()
+    {
+        playingAnim = true;
     }
 
     public void OnAnimationFinish()
