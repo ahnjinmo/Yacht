@@ -3,33 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class DisplayBestRank : MonoBehaviour
+namespace XReal.XTown.Yacht
 {
-    Text text;
-
-    // Start is called before the first frame update
-    void Start()
+    public class DisplayBestRank : MonoBehaviour
     {
-        text = GetComponent<Text>();
-    }
+        Text text;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            text = GetComponent<Text>();
+        }
 
-    public void ShowBestRank()
-    {
-        text.text = StrategyScript.bestRank;
+        // Update is called once per frame
+        void Update()
+        {
 
-        StartCoroutine(HideBestRank());
-    }
+        }
 
-    IEnumerator HideBestRank()
-    {
-        yield return new WaitForSeconds(2);
-        text.text = "";
+        public void ShowBestRank()
+        {
+            text.text = StrategyScript.bestRank;
+
+            StartCoroutine(HideBestRank());
+        }
+
+        IEnumerator HideBestRank()
+        {
+            yield return new WaitForSeconds(2);
+            text.text = "";
+        }
     }
 }
+

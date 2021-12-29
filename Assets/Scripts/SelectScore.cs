@@ -4,23 +4,24 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-
-public class SelectScore : MonoBehaviour, IPointerClickHandler
+namespace XReal.XTown.Yacht
 {
-    public void OnPointerClick(PointerEventData eventData)
+    public class SelectScore : MonoBehaviour, IPointerClickHandler
     {
-        GameObject go = eventData.pointerCurrentRaycast.gameObject;
-        Text categoryText = go.transform.Find("CategoryText").GetComponent<Text>();
-
-
-        int done = StrategyScript.strategies[categoryText.text]["done"];
-
-        if (done != 1)
+        public void OnPointerClick(PointerEventData eventData)
         {
-            StrategyScript.strategies[categoryText.text]["done"] = 1;
-            GameManager.SetGameState(GameState.initializing);
-        }
-        // Debug.Log("Clicked: " + eventData.pointerCurrentRaycast.gameObject.name);
+            GameObject go = eventData.pointerCurrentRaycast.gameObject;
+            Text categoryText = go.transform.Find("CategoryText").GetComponent<Text>();
 
+
+            int done = StrategyScript.strategies[categoryText.text]["done"];
+
+            if (done != 1)
+            {
+                StrategyScript.strategies[categoryText.text]["done"] = 1;
+                GameManager.SetGameState(GameState.initializing);
+            }
+        }
     }
 }
+

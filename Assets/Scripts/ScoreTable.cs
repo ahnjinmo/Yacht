@@ -3,58 +3,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreTable : MonoBehaviour
+namespace XReal.XTown.Yacht
 {
-    private Transform scoreContainer;
-    private Transform scoreTemplate;
-
-    private Dictionary<string, Dictionary<string, int>> strategies = StrategyScript.strategies;
-    private List<Text> scoreTexts = new List<Text>();
-
-    private void Awake()
+    public class ScoreTable : MonoBehaviour
     {
-        scoreContainer = transform.Find("ScoreContainer");
-        scoreTemplate = scoreContainer.Find("ScoreTemplate");
+        private Transform scoreContainer;
+        private Transform scoreTemplate;
 
-        scoreTemplate.gameObject.SetActive(false);
+        private Dictionary<string, Dictionary<string, int>> strategies = StrategyScript.strategies;
+        private List<Text> scoreTexts = new List<Text>();
 
-        float templateHeight = 24f;
-        for (int i = 0; i<14; i++)
+        private void Awake()
         {
-            Transform scoreTransform = Instantiate(scoreTemplate, scoreContainer);
-            RectTransform scoreRectTransform = scoreTransform.GetComponent<RectTransform>();
-            scoreRectTransform.anchoredPosition = new Vector2(0, -templateHeight * i);
-            scoreTransform.gameObject.SetActive(true);
+            scoreContainer = transform.Find("ScoreContainer");
+            scoreTemplate = scoreContainer.Find("ScoreTemplate");
 
-            scoreTransform.Find("ScoreBackground/CategoryText").GetComponent<Text>().text = StrategyScript.strategiesOrder[i];
-            Text scoreText = scoreTransform.Find("ScoreText").GetComponent<Text>();
-            scoreTexts.Add(scoreText);
+            scoreTemplate.gameObject.SetActive(false);
+
+            float templateHeight = 24f;
+            for (int i = 0; i < 14; i++)
+            {
+                Transform scoreTransform = Instantiate(scoreTemplate, scoreContainer);
+                RectTransform scoreRectTransform = scoreTransform.GetComponent<RectTransform>();
+                scoreRectTransform.anchoredPosition = new Vector2(0, -templateHeight * i);
+                scoreTransform.gameObject.SetActive(true);
+
+                scoreTransform.Find("ScoreBackground/CategoryText").GetComponent<Text>().text = StrategyScript.strategiesOrder[i];
+                Text scoreText = scoreTransform.Find("ScoreText").GetComponent<Text>();
+                scoreTexts.Add(scoreText);
+            }
         }
-    }
-    
-    public void UpdateScoreTable()
-    {
-        GameState _gameState = GameManager.currentGameState;
-        Dictionary<string, int> _strategy = null;
 
-        for (int i = 0; i < 14; i++)
+        public void UpdateScoreTable()
         {
-            _strategy = strategies[StrategyScript.strategiesOrder[i]];
+            GameState _gameState = GameManager.currentGameState;
+            Dictionary<string, int> _strategy = null;
 
-            if ((_gameState != GameState.selecting) && _strategy["done"] == 0)
+            for (int i = 0; i < 14; i++)
             {
-                scoreTexts[i].text = "";
-            }
-            else if (_gameState == GameState.selecting)
-            {
-                scoreTexts[i].text = _strategy["score"].ToString();
-            }
+                _strategy = strategies[StrategyScript.strategiesOrder[i]];
 
-            if (_strategy["done"] == 1)
-            {
-                scoreTexts[i].color = Color.black;
-                scoreTexts[i].text = _strategy["score"].ToString();
+                if ((_gameState != GameState.selecting) && _strategy["done"] == 0)
+                {
+                    scoreTexts[i].text = "";
+                }
+                else if (_gameState == GameState.selecting)
+                {
+                    scoreTexts[i].text = _strategy["score"].ToString();
+                }
+
+                if (_strategy["done"] == 1)
+                {
+                    scoreTexts[i].color = Color.black;
+                    scoreTexts[i].text = _strategy["score"].ToString();
+                }
             }
         }
     }
 }
+
