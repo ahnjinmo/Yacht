@@ -202,7 +202,7 @@ namespace XReal.XTown.Yacht
                 return 15;
             }
 
-            Debug.Log("HI");
+            Debug.Log("HI. i AMENDED");
 
             return 0;
         }
