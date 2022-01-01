@@ -202,6 +202,8 @@ namespace XReal.XTown.Yacht
                 return 15;
             }
 
+            Debug.Log("HI");
+
             return 0;
         }
 
