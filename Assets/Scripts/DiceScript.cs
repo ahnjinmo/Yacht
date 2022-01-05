@@ -56,7 +56,7 @@ namespace XReal.XTown.Yacht
         {
             diceVelocity = rb.velocity;
 
-            if (Input.GetMouseButtonDown(0) && GameManager.turnCount <= 3)
+            if (Input.GetMouseButtonDown(0) && GameManager.turnCount <= 3 && GameManager.currentGameState == GameState.selecting)
             {
                 RaycastHit hit;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
